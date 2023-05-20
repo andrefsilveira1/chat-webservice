@@ -13,7 +13,7 @@ public class ChatController {
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
     @MessageMapping("/message")
-    @SendTo("/chatroom/public")
+    @SendTo("/chat/public")
     public Message getAllMessages(@Payload Message message) {
         return message;
     }

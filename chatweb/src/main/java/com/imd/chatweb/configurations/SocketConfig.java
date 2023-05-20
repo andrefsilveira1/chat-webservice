@@ -12,11 +12,12 @@ public class SocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/chatroom", "user");
+        registry.enableSimpleBroker("/chat", "user");
         registry.setUserDestinationPrefix("/user");
     }
 
     @Override
+    //Parear essa função com "sendMessagePrivate();
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
