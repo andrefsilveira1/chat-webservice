@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { over } from "stompjs";
 import SockJS from "sockjs-client";
+import "./index.css"
 
 var stomClient = null;
-export default function Chat() {
+export function Chat() {
     const [clientData, setClientData] = useState({
         name:"",
         receiver:"",
@@ -11,7 +12,7 @@ export default function Chat() {
         message:"",
     });
     const [publicRoom, setPublicRoom] = useState([]);
-    const [privateRoom, setPrivateRoom] = useState(new Map());
+    const [privateRoom, setPrivateRoom] = useState(new Map());  
 
     function handleValue(e) {
         const {value, name} = e.target
@@ -45,12 +46,12 @@ export default function Chat() {
     function onConnected() {
         setClientData({...clientData, "connected":true});
         stomClient.subscribe("/chat/public", onPublic);
-        stomClient.subscribe("/user/"+clientData.name+"/private", onPrivate);
         clientConnected();
     }
     function clientConnected() {
         let client = {
             author: clientData.name,
+            message: "connected",
             status: "JOIN",
         };
         stomClient.send("/app/message", {}, JSON.stringify(client));
@@ -85,66 +86,43 @@ export default function Chat() {
         }
     }
 
-    // Essa função pode ser usada para mandar mensagem privada
-    // function sendMessagePrivate() {
-    //     if(stomClient) {
-    //         let message = {
-    //             name: clientData.name,
-    //             receiver: room,
-    //             message: clientData.message,
-    //             status: "MESSAGE",
-    //         };
-    //         if(clientData.name !== room) {
-    //             privateRoom.set(room).push(message);
-    //             setPrivateRoom(new Map(privateRoom));
-    //         }
-    //         stomClient.send("/app/message", {}, JSON.stringify(message));
-    //         setClientData({...clientData, "message":""});
-    //     }
-    // }
-
-    function onPrivate(payload) {
-        let payloadData = JSON.parse(payload);
-        if(privateRoom.get(payloadData.name)) {
-            let data = [];
-            data.push(payloadData);
-            privateRoom.set(payloadData.name, data);
-            setPrivateRoom(new Map(privateRoom));
-        }
-    }
-
     return(
             <div>
-            <h1>ChatgpD</h1>
-            <div className="container">
+                <h1>ChatgpD</h1>
+            <div className="container ">
                 {clientData.connected? 
+                <>
                 <div>
                     <div className="chat-content">
-                        <ul className="chat-messages list-group list-group-flush">
-                            {publicRoom.map((chat, index) => (
-                                <>
-                                    {
-                                    chat.message !== null &&
-                                    <li key={index} className={`message list-group-item`}>
+                        <div className="box rounded mt-5">
+                            <ul className="chat-messages list-group list-group-flush">
+                               
+                                {publicRoom.map((chat, index) => (
+                                    <>
+                                    {chat.message === "connected" && chat.author !== clientData.name ? <small key={index} className="list-group-item text-secondary d-flex justify-content-center"> User ({chat.author}) has joined the Server!</small> : ''}
                                         {
-                                            chat.message !== null && chat.author !== clientData.name ? <div className="message-data">{chat.author}: {chat.message}</div>
-                                            :<div className="message-data">You: {chat.message}</div>
+                                        chat.message !== null && chat.message !== "connected" && 
+                                        <li key={index} className={`message list-group-item`}>
+                                            {
+                                                chat.author !== clientData.name? <div className="message-data">{chat.author}: {chat.message}</div>
+                                                :<div className="message-data">You: {chat.message}</div>
+                                            }
+                                        </li>
                                         }
-                                    </li>
-                                    }
-                                </>
-                            ))}
-                        </ul>
-
-                    <div className="send-message d-flex">
-                        <input type="text" className="form-control m-2" placeholder="Enter your message" name="message" onKeyUp={handleKey} value={clientData.message} onChange={handleMessage}/>
-                        <button type="button" className="btn btn-primary m-2" onClick={sendMessagePublic}>Enviar</button>
-                    </div>
+                                    </>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="send-message d-flex mt-2">
+                            <input type="text" className="form-control m-2" placeholder="Enter your message" name="message" onKeyUp={handleKey} value={clientData.message} onChange={handleMessage}/>
+                            <button type="button" className="btn btn-primary m-2" onClick={sendMessagePublic}>Enviar</button>
+                        </div>
                     </div>
                 </div>
+                </>
                 :
 
-                <div className="form-group d-flex h-100  align-items-center justify-content-center">
+                <div className="form-group d-flex mt-5  align-items-center justify-content-center">
                     <label >Name: </label>
                     <input placeholder="Insert your name" className="form-control m-2" name="name" value={clientData.name} onChange={handleValue} onKeyUp={handleKey}></input>
                     <button type="button" name="name" className="btn btn-primary" onClick={registerClient}>Enter</button>

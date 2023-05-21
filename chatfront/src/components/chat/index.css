@@ -1,9 +1,5 @@
-
-.message{
-    padding:5px;
-    width: auto;
-    display: flex;
-    flex-direction: row;
-    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
-    margin: 5px 10px;
-  }
+.box {
+  border: 1px solid #ccc;
+  padding: 20px;
+  height: 700px;
+}
