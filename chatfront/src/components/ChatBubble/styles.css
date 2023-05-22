@@ -1,0 +1,68 @@
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.bubble-container {
+  display: flex;
+  align-items: flex-start;
+
+  width: 100%;
+}
+
+.bubble-container.left .profile-picture {
+  order: 0;
+  margin-left: 0;
+  margin-right: 1.5rem;
+}
+
+.bubble-container.left .bubble-messages {
+  order: 1;
+}
+
+.profile-picture {
+  width: 50px;
+  height: 50px;
+
+  margin-left: 1.5rem;
+
+  border-radius: 50%;
+
+  background-color: #f3fc8a;
+  color: #16171b;
+  font-size: 1.6rem;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bubble-messages {
+  width: calc(100% - 50px - 1rem);
+}
+
+.bubble-container.left .bubble-messages > * {
+  text-align: left;
+}
+
+.bubble-messages > * {
+  text-align: right;
+  animation: appear 0.3s;
+  font-size: 1.5rem;
+
+  background-color: #16171b;
+  color: white;
+
+  padding: 0.8rem;
+}
+
+.bubble-messages > * + * {
+  margin-top: 0.5rem;
+}

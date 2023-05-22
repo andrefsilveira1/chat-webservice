@@ -7,6 +7,8 @@ public class Message {
     private String author;
     private String receiver;
     private String message;
+    private String date;
+    private Status status;
 
     public Message() {
 
@@ -60,6 +62,4 @@ public class Message {
         this.status = status;
     }
 
-    private String date;
-    private Status status;
 }
